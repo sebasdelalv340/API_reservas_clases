@@ -33,6 +33,19 @@ Una reserva está asociada a un usuario y a una clase.
 | clase_id    | CLASE         | NOT NULL, FOREIGN KEY       |
 
 
+# Endpoints de la API
+
+## Endpoints para Usuarios
+Gestión de los usuarios registrados en el sistema.
+
+| Método HTTP | Endpoint          | Descripción                                   |
+|-------------|-------------------|-----------------------------------------------|
+| GET         | /usuarios         | Obtener la lista de todos los usuarios.       |
+| GET         | /usuarios/{id}    | Obtener los detalles de un usuario por su ID. |
+| POST        | /usuarios         | Registrar un nuevo usuario.                  |
+| PUT         | /usuarios/{id}    | Actualizar los datos de un usuario existente. |
+| DELETE      | /usuarios/{id}    | Eliminar un usuario por su ID.               |
+
 ---
 
 ## Endpoints para Clases
