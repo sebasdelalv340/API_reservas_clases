@@ -1,0 +1,1 @@
+INSERT INTO `usuarios`(`id`, `username`, `password`, `roles`) VALUES (1,'sebas','$2a$10$DBc2FPq.4XperQMRTGpYnufwdTFxFCJtRZj1zsX.7vFo9YVe9rCyW','USER')
