@@ -7,18 +7,14 @@ import jakarta.persistence.*
 data class Usuario(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long? = null,
+    var id: Long? = null,
 
     @Column(nullable = false, unique = true)
-    val username: String? = null,
+    var username: String? = null,
 
     @Column(nullable = false)
     var password: String? = null,
 
-    val roles: String? = null,
-
-    @OneToMany(mappedBy = "usuario", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
-    val reservas: List<Reserva> = mutableListOf()
-
+    var roles: String? = null
 ) {
 }

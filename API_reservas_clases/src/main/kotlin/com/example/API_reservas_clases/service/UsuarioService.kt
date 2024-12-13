@@ -3,6 +3,8 @@ package com.example.API_reservas_clases.service
 import com.example.API_reservas_clases.model.Usuario
 import com.example.API_reservas_clases.repository.UsuarioRepository
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.security.access.AccessDeniedException
+import org.springframework.security.core.Authentication
 import org.springframework.security.core.userdetails.User
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
@@ -31,7 +33,40 @@ class UsuarioService : UserDetailsService {
     fun registrarUsuario(usuario: Usuario): Usuario? {
         if(usuarioRepository.findByUsername(usuario.username).isPresent) {
             throw IllegalArgumentException("El usuario con el  nombre ${usuario.username} ya existe.")
+        } else {
+            return usuarioRepository.save(usuario)
         }
-        return usuarioRepository.save(usuario)
+    }
+
+    fun getUsuarioById(id: String): Usuario {
+        return usuarioRepository.findById(id.toLong())
+            .orElseThrow { IllegalArgumentException("Usuario con ID $id no encontrado.") }
+    }
+
+    fun updateUsuario(id: String, usuario: Usuario): Usuario? {
+        val userExist = getUsuarioById(id)
+
+        userExist.apply {
+            username = usuario.username
+            password = usuario.password
+            roles = usuario.roles
+        }
+
+        return usuarioRepository.save(userExist)
+    }
+
+    fun deleteUsuario(id: String, authentication: Authentication) : Usuario {
+        val username = authentication.name
+
+        val userDelete = usuarioRepository.findById(id.toLong())
+            .orElseThrow { IllegalArgumentException("Usuario con ID $id no encontrado.") }
+
+        if (userDelete.username != username) {
+            throw AccessDeniedException("No tienes permiso para eliminar este usuario.")
+        }
+
+        usuarioRepository.delete(userDelete)
+        return userDelete
+
     }
 }

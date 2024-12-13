@@ -20,6 +20,6 @@ data class Reserva(
 
     @Column(nullable = false)
     @Temporal(TemporalType.DATE)
-    val fecha_creacion: LocalDate = LocalDate.now(),
+    val fecha_creacion: LocalDate = LocalDate.now()
 ) {
 }
