@@ -17,6 +17,9 @@ data class Clase(
     var descripcion: String,
 
     @Column(nullable = false)
+    var aforo: String,
+
+    @Column(nullable = false)
     @Temporal(TemporalType.DATE)
     val fecha_clase: LocalDate,
 

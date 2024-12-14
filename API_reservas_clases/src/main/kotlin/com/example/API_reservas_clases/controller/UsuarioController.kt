@@ -10,7 +10,6 @@ import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
 import org.springframework.web.bind.annotation.*
-import java.util.*
 import javax.naming.AuthenticationException
 
 @RestController
@@ -26,8 +25,8 @@ class UsuarioController {
     @Autowired
     private lateinit var usuarioService: UsuarioService
 
-    @PostMapping("/alta")
-    fun altaUsuario(
+    @PostMapping("/register")
+    fun registerUsuario(
         @RequestBody newUsuario: Usuario
     ) : ResponseEntity<Usuario?>? {
 
@@ -52,17 +51,23 @@ class UsuarioController {
 
 
     @GetMapping("/get/{id}")
-    fun getUsuarioById(@PathVariable id: String): ResponseEntity<Usuario> {
-        val usuario = usuarioService.getUsuarioById(id)
+    fun getUsuarioById(@PathVariable id: String, authentication: Authentication): ResponseEntity<Usuario> {
+        val usuario = usuarioService.getUsuarioById(id, authentication)
 
         return ResponseEntity(usuario, HttpStatus.OK)
     }
 
+    @GetMapping("/getAll")
+    fun getAll() : ResponseEntity<List<Usuario>>? {
+        val lista = usuarioService.getAll()
+        return ResponseEntity(lista, HttpStatus.OK)
+    }
+
 
     @PutMapping("/update/{id}")
-    fun updateUsuario(@PathVariable id: String?, @RequestBody usuario: Usuario?) : ResponseEntity<Usuario?>? {
+    fun updateUsuario(@PathVariable id: String?, @RequestBody usuario: Usuario?, authentication: Authentication) : ResponseEntity<Usuario?>? {
         if (id != null && usuario != null) {
-            usuarioService.updateUsuario(id, usuario)
+            usuarioService.updateUsuario(id, usuario, authentication)
         } else {
             throw IllegalArgumentException("Usuario ID invalid")
         }
@@ -73,9 +78,11 @@ class UsuarioController {
 
     @DeleteMapping("/delete/{id}")
     fun deleteUsuario(@PathVariable id: String?, authentication: Authentication) : ResponseEntity<Usuario> {
-        val user = id?.let { usuarioService.getUsuarioById(it) }
+        val user = id?.let { usuarioService.getUsuarioById(it, authentication) }
         if (id != null) {
             usuarioService.deleteUsuario(id, authentication)
+        } else {
+            throw IllegalArgumentException("Usuario ID invalid")
         }
 
         return ResponseEntity(user, HttpStatus.OK)

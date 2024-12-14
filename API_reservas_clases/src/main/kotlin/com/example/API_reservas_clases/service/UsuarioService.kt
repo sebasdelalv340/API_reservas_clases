@@ -38,21 +38,34 @@ class UsuarioService : UserDetailsService {
         }
     }
 
-    fun getUsuarioById(id: String): Usuario {
-        return usuarioRepository.findById(id.toLong())
-            .orElseThrow { IllegalArgumentException("Usuario con ID $id no encontrado.") }
+    fun getUsuarioById(id: String, authentication: Authentication): Usuario {
+        val user = usuarioRepository.findById(id.toLong()).get()
+        if (user.username == authentication.name) {
+            return usuarioRepository.findById(id.toLong())
+                .orElseThrow { IllegalArgumentException("Usuario con ID $id no encontrado.") }
+        }
+        return user
     }
 
-    fun updateUsuario(id: String, usuario: Usuario): Usuario? {
-        val userExist = getUsuarioById(id)
+    fun getAll(): List<Usuario> {
+        return usuarioRepository.findAll()
+    }
 
-        userExist.apply {
-            username = usuario.username
-            password = usuario.password
-            roles = usuario.roles
+    fun updateUsuario(id: String, usuario: Usuario, authentication: Authentication): Usuario? {
+        val userExist = getUsuarioById(id, authentication)
+        if (userExist.username == authentication.name) {
+            userExist.apply {
+                username = usuario.username
+                password = usuario.password
+                roles = usuario.roles
+            }
+
+            return usuarioRepository.save(userExist)
+        } else {
+            throw IllegalArgumentException("Usuario con nombre ${authentication.name} no tiene permiso para actualizar este usuario.")
         }
 
-        return usuarioRepository.save(userExist)
+
     }
 
     fun deleteUsuario(id: String, authentication: Authentication) : Usuario {
