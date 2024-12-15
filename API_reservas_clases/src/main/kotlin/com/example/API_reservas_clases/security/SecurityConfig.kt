@@ -9,6 +9,7 @@ import com.nimbusds.jose.proc.SecurityContext
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.http.HttpMethod
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.config.Customizer
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration
@@ -37,6 +38,22 @@ class SecurityConfig {
             .csrf { csrf -> csrf.disable() } // Cross-Site Forgery
             .authorizeHttpRequests { auth ->
                 auth
+                    .requestMatchers(HttpMethod.POST,"/usuarios/login").permitAll()
+                    .requestMatchers(HttpMethod.POST,"/usuarios/register").permitAll()
+                    .requestMatchers(HttpMethod.GET,"/usuarios/{id}").authenticated()
+                    .requestMatchers(HttpMethod.GET, "/usuarios/getAll").hasRole("ADMIN")
+                    .requestMatchers(HttpMethod.PUT, "/usuarios/update/{id}").authenticated()
+                    .requestMatchers(HttpMethod.DELETE, "/usuarios/delete/{id}").authenticated()
+                    .requestMatchers(HttpMethod.GET, "/reservas/{id}").authenticated() // Solo autenticados pueden ver las reservas
+                    .requestMatchers(HttpMethod.GET, "/reservas/getAll").hasRole("ADMIN") // Solo ADMIN puede ver todas las reservas
+                    .requestMatchers(HttpMethod.POST, "/reservas/register").authenticated()
+                    .requestMatchers(HttpMethod.PUT, "/reservas/update/{id}").authenticated()
+                    .requestMatchers(HttpMethod.DELETE,"/reservas/delete/{id}").authenticated()
+                    .requestMatchers(HttpMethod.POST, "/clases/register").hasRole("ADMIN")
+                    .requestMatchers(HttpMethod.PUT,"/clases/update/{id}").hasRole("ADMIN")
+                    .requestMatchers(HttpMethod.DELETE,"/clases/delete/{id}").hasRole("ADMIN")
+                    .requestMatchers(HttpMethod.GET,"/clases/{id}").authenticated()
+                    .requestMatchers(HttpMethod.GET, "/clases/getAll").authenticated()
                     .anyRequest().permitAll()
             } // Los recursos protegidos y públicos
             .oauth2ResourceServer { oauth2 -> oauth2.jwt(Customizer.withDefaults()) }

@@ -1,10 +1,22 @@
 package com.example.API_reservas_clases.util
 
-import java.time.LocalDate
+import com.example.API_reservas_clases.model.Reserva
+import java.time.Duration
+import java.time.LocalDateTime
 
-fun validarReserva(reservaFecha: LocalDate, claseFecha: LocalDate): Boolean {
-    if (reservaFecha.isAfter(claseFecha)) {
-        throw IllegalArgumentException("La fecha de la reserva ($reservaFecha) no puede ser posterior a la fecha de la clase ($claseFecha).")
+fun validarFecha(reserva: Reserva): Boolean {
+    // Verificar si se puede eliminar basándonos en la fecha de la clase
+    val clase = reserva.clase
+    val fechaClase = clase?.fecha_clase
+    val fechaHoraActual = LocalDateTime.now()
+
+    // Calcular la diferencia entre la fecha actual y la fecha de la clase
+    val horasRestantes = Duration.between(fechaHoraActual, fechaClase).toHours()
+
+    // Si quedan menos de 2 horas, no se puede eliminar la reserva
+    if (horasRestantes < 2) {
+        throw IllegalArgumentException("No se puede eliminar la reserva, quedan menos de 2 horas para la clase.")
+    } else {
+        return true
     }
-    return true // Validación exitosa
 }

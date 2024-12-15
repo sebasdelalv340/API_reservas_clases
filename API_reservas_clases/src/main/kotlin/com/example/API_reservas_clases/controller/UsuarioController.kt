@@ -65,27 +65,28 @@ class UsuarioController {
 
 
     @PutMapping("/update/{id}")
-    fun updateUsuario(@PathVariable id: String?, @RequestBody usuario: Usuario?, authentication: Authentication) : ResponseEntity<Usuario?>? {
-        if (id != null && usuario != null) {
-            usuarioService.updateUsuario(id, usuario, authentication)
-        } else {
-            throw IllegalArgumentException("Usuario ID invalid")
+    fun updateUsuario(@PathVariable id: String?, @RequestBody usuario: Usuario?, authentication: Authentication) : ResponseEntity<Any>? {
+
+        val usuarioActualizado = usuario?.let {
+            if (id != null) {
+                usuarioService.updateUsuario(id, it, authentication)
+            }
         }
 
-        return ResponseEntity(usuario, HttpStatus.OK)
+        return ResponseEntity(mapOf("message" to "Usuario actualizado con éxito", "usuario" to usuarioActualizado), HttpStatus.OK)
     }
 
 
     @DeleteMapping("/delete/{id}")
-    fun deleteUsuario(@PathVariable id: String?, authentication: Authentication) : ResponseEntity<Usuario> {
-        val user = id?.let { usuarioService.getUsuarioById(it, authentication) }
-        if (id != null) {
+    fun deleteUsuario(@PathVariable id: String?, authentication: Authentication) : ResponseEntity<Any>? {
+
+        val userEliminado = if (id != null) {
             usuarioService.deleteUsuario(id, authentication)
         } else {
-            throw IllegalArgumentException("Usuario ID invalid")
+            throw IllegalArgumentException("El ID $id no es válido")
         }
 
-        return ResponseEntity(user, HttpStatus.OK)
+        return ResponseEntity(mapOf("message" to "Usuario eliminado con éxito", "usuario" to userEliminado), HttpStatus.OK)
     }
 }
 

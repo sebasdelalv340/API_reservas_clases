@@ -2,6 +2,7 @@ package com.example.API_reservas_clases.model
 
 import jakarta.persistence.*
 import java.time.LocalDate
+import java.time.LocalDateTime
 
 @Entity
 @Table(name = "clases")
@@ -17,11 +18,11 @@ data class Clase(
     var descripcion: String,
 
     @Column(nullable = false)
-    var aforo: String,
+    var aforo: Int,
 
     @Column(nullable = false)
     @Temporal(TemporalType.DATE)
-    val fecha_clase: LocalDate,
+    var fecha_clase: LocalDateTime,
 
     @OneToMany(mappedBy = "clase", cascade = [CascadeType.ALL])
     val reservas: MutableList<Reserva> = mutableListOf()
