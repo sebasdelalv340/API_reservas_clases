@@ -374,3 +374,37 @@ La respuesta para cualquier excepción sigue el formato definido por la clase `E
     "mensaje": "No tienes permiso para realizar esta acción.",
     "ruta": "/reservas/delete/{id}"
 }
+```
+
+---
+
+# Configuración de Seguridad
+
+## Resumen de Configuración
+
+La clase `SecurityConfig` configura la seguridad para la API, implementando las siguientes funcionalidades:
+
+- **Almacenamiento de contraseñas**: Utiliza `BCryptPasswordEncoder` para almacenar y verificar contraseñas de manera segura.
+- **Protección de endpoints**: Emplea JWT (JSON Web Tokens) para proteger los endpoints de la API y controla el acceso basado en roles.
+- **Configuración de endpoints públicos y protegidos**:
+  - Los endpoints `/usuarios/register` y `/usuarios/login` son accesibles públicamente.
+  - Los recursos administrativos requieren el rol `ADMIN`.
+  - El resto de los recursos requiere autenticación para su acceso.
+
+### Generación y Decodificación de JWT
+
+- El servicio utiliza claves RSA para emitir tokens JWT firmados digitalmente.
+- Los tokens contienen los roles del usuario y tienen una duración de una hora.
+- Se utiliza `JwtEncoder` para generar el token y `JwtDecoder` para validarlo.
+
+## Configuración de Seguridad por Endpoint
+
+| Endpoint                     | Método | Permisos   |
+|------------------------------|--------|------------|
+| `/usuarios/login`, `/usuarios/register` | POST   | Público    |
+| `/usuarios/getAll`           | GET    | ADMIN      |
+| Otros `/usuarios/**`         | Varios | Autenticado|
+| `/reservas/getAll`           | GET    | ADMIN      |
+| Otros `/reservas/**`         | Varios | Autenticado|
+| `/clases/**`                 | Varios | ADMIN/Autenticado |
+
