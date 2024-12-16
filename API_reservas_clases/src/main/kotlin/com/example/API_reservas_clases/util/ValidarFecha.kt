@@ -1,8 +1,8 @@
 package com.example.API_reservas_clases.util
 
 import com.example.API_reservas_clases.model.Reserva
-import java.time.Duration
 import java.time.LocalDateTime
+import java.time.temporal.ChronoUnit
 
 fun validarFecha(reserva: Reserva): Boolean {
     // Verificar si se puede eliminar basándonos en la fecha de la clase
@@ -11,7 +11,7 @@ fun validarFecha(reserva: Reserva): Boolean {
     val fechaHoraActual = LocalDateTime.now()
 
     // Calcular la diferencia entre la fecha actual y la fecha de la clase
-    val horasRestantes = Duration.between(fechaHoraActual, fechaClase).toHours()
+    val horasRestantes = ChronoUnit.HOURS.between(fechaHoraActual, fechaClase)
 
     // Si quedan menos de 2 horas, no se puede eliminar la reserva
     if (horasRestantes < 2) {

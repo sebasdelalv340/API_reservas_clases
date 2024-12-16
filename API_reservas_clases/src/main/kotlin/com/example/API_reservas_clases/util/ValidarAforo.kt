@@ -1,5 +1,9 @@
 package com.example.API_reservas_clases.util
 
-fun validarAforo(reservas: Long, aforo: Int): Boolean {
-    return reservas.toInt() != aforo
+import org.springframework.security.access.AccessDeniedException
+
+fun validarAforo(reservas: Int, aforo: Int) {
+    if (reservas >= aforo) {
+        throw AccessDeniedException("La clase ya ha alcanzado su aforo máximo.")
+    }
 }

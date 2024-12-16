@@ -6,6 +6,7 @@ import com.example.API_reservas_clases.repository.ReservaRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.crossstore.ChangeSetPersister
 import org.springframework.security.core.Authentication
+import org.springframework.security.core.AuthenticationException
 import org.springframework.stereotype.Service
 
 @Service
@@ -23,13 +24,12 @@ class ClaseService {
     }
 
     // Obtener una clase por ID
-    fun getClaseById(id: Long): Clase {
+    fun getClaseById(id: Long, authentication: Authentication): Clase {
         return claseRepository.findById(id).orElseThrow { ChangeSetPersister.NotFoundException() }
     }
 
     // Registrar una nueva clase (solo debe ser accesible por ADMIN)
-    fun registrarClase(newClase: Clase): Clase {
-        // Aquí podemos agregar lógica para validar que no haya otra clase con el mismo nombre o algo similar
+    fun registrarClase(newClase: Clase, authentication: Authentication): Clase {
         return claseRepository.save(newClase)
     }
 

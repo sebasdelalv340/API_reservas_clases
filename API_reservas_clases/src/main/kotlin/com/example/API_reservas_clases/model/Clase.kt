@@ -1,7 +1,7 @@
 package com.example.API_reservas_clases.model
 
+import com.fasterxml.jackson.annotation.JsonManagedReference
 import jakarta.persistence.*
-import java.time.LocalDate
 import java.time.LocalDateTime
 
 @Entity
@@ -21,9 +21,11 @@ data class Clase(
     var aforo: Int,
 
     @Column(nullable = false)
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     var fecha_clase: LocalDateTime,
 
-    @OneToMany(mappedBy = "clase", cascade = [CascadeType.ALL])
+    @OneToMany(mappedBy = "clase", cascade = [CascadeType.ALL], orphanRemoval = true)
+    @JsonManagedReference
     val reservas: MutableList<Reserva> = mutableListOf()
-)
+){
+}

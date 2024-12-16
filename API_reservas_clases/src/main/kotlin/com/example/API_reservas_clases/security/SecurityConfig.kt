@@ -35,7 +35,7 @@ class SecurityConfig {
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
 
         return http
-            .csrf { csrf -> csrf.disable() } // Cross-Site Forgery
+            .csrf { csrf -> csrf.disable() }
             .authorizeHttpRequests { auth ->
                 auth
                     .requestMatchers(HttpMethod.POST,"/usuarios/login").permitAll()
@@ -44,8 +44,8 @@ class SecurityConfig {
                     .requestMatchers(HttpMethod.GET, "/usuarios/getAll").hasRole("ADMIN")
                     .requestMatchers(HttpMethod.PUT, "/usuarios/update/{id}").authenticated()
                     .requestMatchers(HttpMethod.DELETE, "/usuarios/delete/{id}").authenticated()
-                    .requestMatchers(HttpMethod.GET, "/reservas/{id}").authenticated() // Solo autenticados pueden ver las reservas
-                    .requestMatchers(HttpMethod.GET, "/reservas/getAll").hasRole("ADMIN") // Solo ADMIN puede ver todas las reservas
+                    .requestMatchers(HttpMethod.GET, "/reservas/{id}").authenticated()
+                    .requestMatchers(HttpMethod.GET, "/reservas/getAll").hasRole("ADMIN")
                     .requestMatchers(HttpMethod.POST, "/reservas/register").authenticated()
                     .requestMatchers(HttpMethod.PUT, "/reservas/update/{id}").authenticated()
                     .requestMatchers(HttpMethod.DELETE,"/reservas/delete/{id}").authenticated()

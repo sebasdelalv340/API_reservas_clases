@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.Authentication
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.server.ResponseStatusException
 
 @RestController
 @RequestMapping("/clases")
@@ -26,16 +27,19 @@ class ClaseController {
     @GetMapping("/{id}")
     fun getClase(@PathVariable id: Long, authentication: Authentication): ResponseEntity<Clase> {
 
-        val clase = claseService.getClaseById(id)
+        val clase = claseService.getClaseById(id, authentication)
         return ResponseEntity(clase, HttpStatus.OK)
     }
 
     // Registrar una nueva clase (solo accesible por administradores)
     @PostMapping("/register")
-    fun registerClase(@RequestBody newClase: Clase, authentication: Authentication): ResponseEntity<String> {
+    fun registerClase(@RequestBody newClase: Clase?, authentication: Authentication): ResponseEntity<String> {
 
-        val claseGuardada = claseService.registrarClase(newClase)
-        return ResponseEntity("Clase ${claseGuardada.nombre} registrada con éxito", HttpStatus.CREATED)
+        val claseGuardada = newClase?.let { claseService.registrarClase(it, authentication) }
+        if (claseGuardada != null) {
+            return ResponseEntity("Clase ${claseGuardada.nombre} registrada con éxito", HttpStatus.CREATED)
+        }
+        throw ResponseStatusException(HttpStatus.CONFLICT)
     }
 
     // Actualizar una clase (solo accesible por administradores)

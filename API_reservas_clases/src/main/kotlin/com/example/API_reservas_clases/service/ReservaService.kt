@@ -9,8 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.crossstore.ChangeSetPersister
 import org.springframework.security.core.Authentication
 import org.springframework.stereotype.Service
-import java.time.Duration
-import java.time.LocalDateTime
 
 @Service
 class ReservaService {
@@ -25,14 +23,13 @@ class ReservaService {
         newReserva.usuario?.let { validarUsuario(it, authentication) }
 
         // Agregar lógica de validación si es necesario, como comprobar si la clase tiene aforo disponible
-        val clase =  newReserva.clase
-        val aforoDisponible = 20
-        val reservasParaClase = clase?.let { reservaRepository.countByClase(it) }
-        if (reservasParaClase != null) {
-            if (!validarAforo(reservasParaClase, aforoDisponible)) {
-                throw IllegalArgumentException("La clase ${clase.nombre} ya ha alcanzado su aforo máximo.")
-            }
+        val aforoDisponible = newReserva.clase?.aforo
+        val reservasParaClase = newReserva.clase?.reservas?.count()
+
+        if (reservasParaClase != null && aforoDisponible != null) {
+            validarAforo(reservasParaClase, aforoDisponible)
         }
+
         return reservaRepository.save(newReserva)
     }
 

@@ -58,8 +58,8 @@ class UsuarioController {
     }
 
     @GetMapping("/getAll")
-    fun getAll() : ResponseEntity<List<Usuario>>? {
-        val lista = usuarioService.getAll()
+    fun getAll(authentication: Authentication) : ResponseEntity<List<Usuario>>? {
+        val lista = usuarioService.getAll(authentication)
         return ResponseEntity(lista, HttpStatus.OK)
     }
 

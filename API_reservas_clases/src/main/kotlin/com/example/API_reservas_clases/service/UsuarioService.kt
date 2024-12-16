@@ -38,7 +38,7 @@ class UsuarioService : UserDetailsService {
 
     fun registrarUsuario(usuario: Usuario): Usuario? {
         if(usuarioRepository.findByUsername(usuario.username).isPresent) {
-            throw IllegalArgumentException("El usuario con el  nombre ${usuario.username} ya existe.")
+            throw IllegalArgumentException("El usuario con el nombre ${usuario.username} ya existe.")
         } else {
             usuario.password = securityConfig.passwordEncoder().encode(usuario.password)
             return usuarioRepository.save(usuario)
@@ -56,7 +56,7 @@ class UsuarioService : UserDetailsService {
         return usuario
     }
 
-    fun getAll(): List<Usuario> {
+    fun getAll(authentication: Authentication): List<Usuario> {
         return usuarioRepository.findAll()
     }
 
